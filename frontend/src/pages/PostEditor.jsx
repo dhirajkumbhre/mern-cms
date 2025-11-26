@@ -1,58 +1,88 @@
-import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { api } from '../services/api';
-
+import { useState, useEffect } from "react";
+import { api } from "../services/api";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function PostEditor() {
-const { id } = useParams();
-const editMode = Boolean(id);
-const [title, setTitle] = React.useState('');
-const [content, setContent] = React.useState('');
-const [saving, setSaving] = React.useState(false);
-const nav = useNavigate();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
-React.useEffect(() => {
-if (!editMode) return;
-api.fetchPost(id).then(r => {
-setTitle(r.data.title);
-setContent(r.data.content);
-}).catch(() => {});
-}, [editMode, id]);
+  // Load existing post if editing
+  useEffect(() => {
+    if (id) {
+      api.fetchPost(id).then((res) => {
+        setTitle(res.data.title);
+        setContent(res.data.content);
+      });
+    }
+  }, [id]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-async function save() {
-setSaving(true);
-const payload = { title, content, excerpt: content.slice(0, 160) };
-try {
-if (editMode) await api.updatePost(id, payload);
-else await api.createPost(payload);
-nav('/dashboard');
-} catch (err) {
-alert('Save failed');
-}
-setSaving(false);
-}
+    if (!title.trim() || !content.trim()) {
+      alert("Title and content cannot be empty");
+      return;
+    }
 
+    try {
+      if (id) {
+        // Update existing post
+        await api.updatePost(id, { title, content });
+      } else {
+        // Create new post
+        await api.createPost({ title, content });
+      }
 
-return (
-<div className="space-y-4">
-<div className="flex items-center justify-between">
-<h2 className="text-2xl font-bold">{editMode ? 'Edit Post' : 'New Post'}</h2>
-<div className="flex gap-2">
-<button onClick={() => nav('/dashboard')} className="px-3 py-2 rounded border">Cancel</button>
-<button onClick={save} disabled={saving} className="px-4 py-2 rounded bg-brand-500 text-white">{saving ? 'Saving...' : 'Publish'}</button>
-</div>
-</div>
+      navigate("/dashboard");
+    } catch (err) {
+      console.log("Error saving post:", err);
+      alert("Failed to save the post");
+    }
+  };
 
+  return (
+    <div className="max-w-4xl mx-auto mt-10 px-4">
+      <h1 className="text-3xl font-bold mb-6">
+        {id ? "Edit Post" : "Create New Post"}
+      </h1>
 
-<input value={title} onChange={e => setTitle(e.target.value)} placeholder="Post title" className="w-full p-3 rounded border bg-white/80" />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Title */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">Title</label>
+          <input
+            type="text"
+            className="w-full p-3 border rounded-lg"
+            placeholder="Enter post title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
 
+        {/* Content */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Content
+          </label>
+          <textarea
+            className="w-full p-3 border rounded-lg h-60"
+            placeholder="Write your post content here..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          ></textarea>
+        </div>
 
-<textarea value={content} onChange={e => setContent(e.target.value)} rows={14} placeholder="Write your post (HTML allowed)" className="w-full p-3 rounded border bg-white/80 font-mono" />
-
-
-<div className="text-sm text-slate-500">Tip: paste HTML or markdown-rendered HTML for rich content. For production, integrate a proper WYSIWYG editor.</div>
-</div>
-);
+        {/* Submit */}
+        <button
+          type="submit"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+        >
+          {id ? "Update Post" : "Create Post"}
+        </button>
+      </form>
+    </div>
+  );
 }

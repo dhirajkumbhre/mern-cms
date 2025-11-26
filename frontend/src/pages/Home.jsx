@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
-import PostCard from "../components/PostCard";
+import Postcard from "../components/Postcard";
 
 
 export default function Home() {

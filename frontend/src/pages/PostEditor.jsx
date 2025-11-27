@@ -1,84 +1,35 @@
-import { useState, useEffect } from "react";
-import { api } from "../services/api";
-import { useNavigate, useParams } from "react-router-dom";
-
 export default function PostEditor() {
-  const navigate = useNavigate();
-  const { id } = useParams();
-
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-
-  // Load existing post if editing
-  useEffect(() => {
-    if (id) {
-      api.fetchPost(id).then((res) => {
-        setTitle(res.data.title);
-        setContent(res.data.content);
-      });
-    }
-  }, [id]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!title.trim() || !content.trim()) {
-      alert("Title and content cannot be empty");
-      return;
-    }
-
-    try {
-      if (id) {
-        // Update existing post
-        await api.updatePost(id, { title, content });
-      } else {
-        // Create new post
-        await api.createPost({ title, content });
-      }
-
-      navigate("/dashboard");
-    } catch (err) {
-      console.log("Error saving post:", err);
-      alert("Failed to save the post");
-    }
-  };
-
+  ...
   return (
-    <div className="max-w-4xl mx-auto mt-10 px-4">
-      <h1 className="text-3xl font-bold mb-6">
-        {id ? "Edit Post" : "Create New Post"}
+    <div className="max-w-4xl mx-auto pt-28 px-6 page-enter">
+
+      <h1 className="text-4xl font-bold mb-8 gradient-text">
+        {id ? "Edit Your Post" : "Create a New Post"}
       </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-2xl shadow-xl hover-glow space-y-6"
+      >
         {/* Title */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">Title</label>
-          <input
-            type="text"
-            className="w-full p-3 border rounded-lg"
-            placeholder="Enter post title..."
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Post title"
+          className="w-full p-4 border rounded-xl focus:border-indigo-500"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
         {/* Content */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Content
-          </label>
-          <textarea
-            className="w-full p-3 border rounded-lg h-60"
-            placeholder="Write your post content here..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
-        </div>
+        <textarea
+          className="w-full p-4 border rounded-xl h-60 focus:border-indigo-500"
+          placeholder="Write your content here..."
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
 
-        {/* Submit */}
         <button
-          type="submit"
-          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-md"
         >
           {id ? "Update Post" : "Create Post"}
         </button>

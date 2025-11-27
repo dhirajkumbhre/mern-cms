@@ -9,7 +9,7 @@ import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
   return (
-    <div className="pt-16">
+    <div className="pt-24">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

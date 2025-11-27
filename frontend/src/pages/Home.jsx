@@ -1,37 +1,49 @@
-import { useEffect, useState } from "react";
-import { api } from "../services/api";
-import Postcard from "../components/Postcard";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
-export default function Home(){
-  const [posts, setPosts] = useState([]);
+export default function Home() {
 
-  useEffect(()=> { api.fetchPosts().then(r => setPosts(r.data || [])); }, []);
+  // fade animation
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
-    <div className="page-enter">
-      <section className="pt-28 pb-20 bg-gradient-to-br from-indigo-600 to-purple-600 relative overflow-hidden">
-        <div className="absolute -left-20 -top-10 w-80 h-80 bg-white/6 rounded-full blur-3xl float-slow"></div>
-        <div className="container-max text-center text-white">
-          <h1 className="text-4xl md:text-6xl font-extrabold gradient-text leading-tight mb-4">A beautiful place to write, publish and share</h1>
-          <p className="text-lg text-white/90 max-w-2xl mx-auto mb-6">Premium UI, fast experience and polished animations. Create content that stands out.</p>
-          <div className="flex items-center justify-center gap-4">
-            <a href="/dashboard" className="px-6 py-3 rounded-xl bg-white text-indigo-700 font-semibold shadow cta">Go to Dashboard</a>
-            <a href="/auth" className="px-5 py-3 rounded-xl border border-white/30 text-white">Get started — it's free</a>
-          </div>
-        </div>
-      </section>
+    <div className="pt-28 min-h-screen bg-gradient-to-br from-white via-indigo-50 to-purple-100 dark:from-black dark:via-gray-900 dark:to-gray-800">
 
-      <main className="container-max py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-        { posts.length === 0 ? (
-          <div className="md:col-span-3 text-center text-slate-500">No posts yet. Create one from the dashboard.</div>
-        ) : (
-          posts.map((p, i) => (
-            <div key={p._id} style={{ animationDelay: `${i*80}ms` }}>
-              <Postcard post={p} />
-            </div>
-          ))
-        )}
-      </main>
+      {/* Floating bubble decorations */}
+      <div className="absolute top-20 left-10 w-24 h-24 bg-indigo-300 opacity-30 rounded-full float-slow"></div>
+      <div className="absolute bottom-40 right-20 w-32 h-32 bg-purple-400 opacity-30 rounded-full float-slow"></div>
+
+      <div className="max-w-5xl mx-auto text-center px-6 fade-enter">
+        
+        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent drop-shadow-md leading-tight">
+          A beautiful place to write, publish and share
+        </h1>
+
+        <p className="mt-6 text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+          Premium UI, smooth animations and a modern experience.  
+          Build stunning content with ease.
+        </p>
+
+        <div className="mt-10 flex justify-center gap-6">
+          <Link 
+            to="/dashboard"
+            className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md text-lg transition"
+          >
+            Go to Dashboard
+          </Link>
+
+          <Link 
+            to="/auth"
+            className="px-8 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 hover:border-indigo-500 rounded-xl text-lg transition"
+          >
+            Get Started — it's free
+          </Link>
+        </div>
+
+      </div>
+
     </div>
   );
 }

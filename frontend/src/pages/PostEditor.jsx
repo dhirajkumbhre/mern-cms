@@ -1,39 +1,48 @@
-export default function PostEditor() {
-  ...
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
+import { useNavigate, useParams } from "react-router-dom";
+
+export default function PostEditor(){
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(()=> {
+    if(id) api.fetchPost(id).then(r => {
+      const d = r.data;
+      setTitle(d.title); setContent(d.content);
+    }).catch(()=>{});
+  }, [id]);
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if(!title.trim() || !content.trim()){ alert("Title and content are required"); return; }
+    setSaving(true);
+    try{
+      if(id) await api.updatePost(id, { title, content });
+      else await api.createPost({ title, content });
+      navigate("/dashboard");
+    }catch(err){ console.error(err); alert("Failed to save"); }
+    finally{ setSaving(false); }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto pt-28 px-6 page-enter">
-
-      <h1 className="text-4xl font-bold mb-8 gradient-text">
-        {id ? "Edit Your Post" : "Create a New Post"}
-      </h1>
-
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-xl hover-glow space-y-6"
-      >
-        {/* Title */}
-        <input
-          type="text"
-          placeholder="Post title"
-          className="w-full p-4 border rounded-xl focus:border-indigo-500"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-
-        {/* Content */}
-        <textarea
-          className="w-full p-4 border rounded-xl h-60 focus:border-indigo-500"
-          placeholder="Write your content here..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-
-        <button
-          className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-md"
-        >
-          {id ? "Update Post" : "Create Post"}
-        </button>
-      </form>
+    <div className="page-enter container-max pt-28 pb-16">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">{id ? "Edit Post" : "Create New Post"}</h1>
+        <form onSubmit={onSubmit} className="bg-white p-8 rounded-2xl shadow-xl space-y-6">
+          <input className="w-full p-3 border rounded-lg input-focus" placeholder="Title" value={title} onChange={e=>setTitle(e.target.value)} />
+          <textarea className="w-full p-3 border rounded-lg input-focus h-52" placeholder="Write your post..." value={content} onChange={e=>setContent(e.target.value)} />
+          <div className="flex items-center gap-3">
+            <button disabled={saving} className="px-5 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
+              {saving ? "Saving..." : (id ? "Update Post" : "Publish Post")}
+            </button>
+            <button type="button" className="px-4 py-3 bg-gray-100 rounded-lg" onClick={()=>navigate(-1)}>Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

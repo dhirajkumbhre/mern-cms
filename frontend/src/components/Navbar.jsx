@@ -1,44 +1,49 @@
-import { Link, useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
-const navigate = useNavigate();
-const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/auth";
+  };
 
-return (
-<nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg shadow-sm dark:bg-gray-800/80">
-<div className="max-w-6xl mx-auto flex justify-between items-center p-4">
-<Link to="/" className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-MERN CMS
-</Link>
+  return (
+    <nav className="bg-white/80 backdrop-blur-md shadow-md fixed top-0 left-0 right-0 z-50">
+      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+        
+        {/* LOGO */}
+        <Link to="/" className="text-2xl font-bold text-indigo-600 hover:text-indigo-700">
+          MERN CMS
+        </Link>
 
+        {/* MENU */}
+        <div className="flex items-center gap-6 text-gray-700 font-medium">
+          <Link className="hover:text-indigo-600" to="/">Home</Link>
+          
+          {token && (
+            <Link className="hover:text-indigo-600" to="/dashboard">
+              Dashboard
+            </Link>
+          )}
 
-<div className="flex gap-6 text-lg">
-<Link to="/" className="hover:text-indigo-600">Home</Link>
-{token && <Link to="/dashboard" className="hover:text-indigo-600">Dashboard</Link>}
-
-
-{!token ? (
-<button
-onClick={() => navigate("/auth")}
-className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
->
-Login
-</button>
-) : (
-<button
-onClick={() => {
-localStorage.removeItem("token");
-navigate("/auth");
-}}
-className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
->
-Logout
-</button>
-)}
-</div>
-</div>
-</nav>
-);
+          {!token ? (
+            <Link
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow"
+              to="/auth"
+            >
+              Login
+            </Link>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow"
+            >
+              Logout
+            </button>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
 }

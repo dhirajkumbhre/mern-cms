@@ -2,32 +2,48 @@ import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { Link } from "react-router-dom";
 
-export default function Dashboard(){
+export default function Dashboard() {
   const [posts, setPosts] = useState([]);
 
-  useEffect(()=> { api.fetchPosts().then(r => setPosts(r.data || [])); }, []);
+  useEffect(() => {
+    api.fetchPosts().then((res) => setPosts(res.data));
+  }, []);
 
   return (
-    <div className="page-enter container-max pt-28 pb-16">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold">Dashboard</h2>
-        <div className="flex items-center gap-3">
-          <Link to="/editor" className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow cta">New Post</Link>
-        </div>
+    <div className="pt-28 max-w-6xl mx-auto px-5 fade-enter">
+
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-extrabold gradient-text">Your Posts</h1>
+
+        <Link
+          to="/editor"
+          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow transition"
+        >
+          + New Post
+        </Link>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {posts.map(p => (
-          <div key={p._id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-lg hover:-translate-y-1 transition">
-            <h3 className="text-lg font-semibold mb-2">{p.title}</h3>
-            <p className="text-slate-600 line-clamp-3 mb-4">{p.content}</p>
-            <div className="flex items-center gap-3">
-              <Link to={`/post/${p._id}`} className="text-indigo-600">View</Link>
-              <Link to={`/editor/${p._id}`} className="text-slate-700">Edit</Link>
+      {/* Grid layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+        {posts.map((post) => (
+          <Link
+            key={post._id}
+            to={`/post/${post._id}`}
+            className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{post.title}</h2>
+
+            <p className="mt-2 text-gray-600 dark:text-gray-300 line-clamp-3">
+              {post.content}
+            </p>
+
+            <div className="mt-4 text-indigo-600 dark:text-indigo-400 font-medium">
+              Read more →
             </div>
-          </div>
+          </Link>
         ))}
       </div>
+
     </div>
   );
 }

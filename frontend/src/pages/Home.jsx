@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-<div className="min-h-screen bg-red-500">
+    <div className="min-h-screen bg-red-500">
   TESTING TAILWIND
 </div>
+
       {/* HERO SECTION */}
       <section className="flex flex-col items-center text-center py-24 px-6">
         <motion.h1

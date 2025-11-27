@@ -1,51 +1,69 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../services/api';
-
+import { useState } from "react";
+import { api } from "../services/api";
 
 export default function Auth() {
-const [mode, setMode] = React.useState('login');
-const [form, setForm] = React.useState({ email: '', password: '', name: '' });
-const nav = useNavigate();
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const toggle = () => setIsLogin(!isLogin);
 
-async function submit(e) {
-  e.preventDefault();
-  try {
-    let res;
-    if (mode === 'login') {
-      res = await api.login({ email: form.email, password: form.password });
-    } else {
-      res = await api.register({ name: form.name, email: form.email, password: form.password });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const action = isLogin ? api.login : api.register;
+
+    try {
+      const res = await action({ email, password });
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        window.location.href = "/dashboard";
+      }
+    } catch (err) {
+      alert("Invalid credentials");
     }
+  };
 
-    // ⭐ Save the JWT token returned by backend
-    localStorage.setItem("token", res.data.token);
+  return (
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-600 to-purple-600">
+      <div className="bg-white p-10 rounded-2xl shadow-2xl w-96 animate-slideUp">
+        
+        <h2 className="text-3xl font-bold text-center mb-6">
+          {isLogin ? "Welcome Back" : "Create Account"}
+        </h2>
 
-    // Redirect after login
-    nav('/dashboard');
-  } catch (err) {
-    alert('Auth failed');
-  }
-}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <input
+            className="w-full p-3 border rounded-lg focus:border-indigo-500"
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
+          <input
+            className="w-full p-3 border rounded-lg focus:border-indigo-500"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
+          <button className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow">
+            {isLogin ? "Login" : "Register"}
+          </button>
+        </form>
 
+        <p className="text-center mt-4 text-gray-600">
+          {isLogin ? "Don't have an account?" : "Already have an account?"}
+          <button
+            onClick={toggle}
+            className="text-indigo-600 hover:underline ml-1"
+          >
+            {isLogin ? "Register" : "Login"}
+          </button>
+        </p>
 
-return (
-<div className="max-w-md mx-auto bg-white/80 dark:bg-slate-900/70 p-6 rounded shadow">
-<h3 className="text-xl font-bold mb-4">{mode === 'login' ? 'Sign in' : 'Create account'}</h3>
-<form onSubmit={submit} className="space-y-3">
-{mode === 'register' && (
-<input placeholder="Full name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full p-2 rounded border" />
-)}
-<input placeholder="Email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="w-full p-2 rounded border" />
-<input placeholder="Password" type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} className="w-full p-2 rounded border" />
-<div className="flex items-center justify-between">
-<button className="px-4 py-2 rounded bg-brand-500 text-white" type="submit">{mode === 'login' ? 'Sign in' : 'Register'}</button>
-<button type="button" onClick={() => setMode(m => (m === 'login' ? 'register' : 'login'))} className="text-sm text-slate-500">{mode === 'login' ? 'Create account' : 'Already have account'}</button>
-</div>
-</form>
-</div>
-);
+      </div>
+    </div>
+  );
 }

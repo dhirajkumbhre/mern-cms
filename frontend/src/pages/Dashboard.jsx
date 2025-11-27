@@ -1,67 +1,37 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const [posts, setPosts] = useState([]);
 
-  const loadPosts = () => {
-    api.fetchPosts().then((res) => setPosts(res.data));
-  };
-
   useEffect(() => {
-    loadPosts();
+    api.fetchPosts().then((res) => setPosts(res.data));
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-4">
+    <div className="max-w-6xl mx-auto pt-28 px-6">
+
       <div className="flex justify-between items-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Dashboard
-        </h1>
-        <a
-          href="/editor"
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all"
+        <h1 className="text-4xl font-bold">Dashboard</h1>
+        <Link
+          to="/editor"
+          className="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-lg"
         >
           + New Post
-        </a>
+        </Link>
       </div>
 
-      <div className="space-y-6">
+      <div className="grid md:grid-cols-3 gap-6">
         {posts.map((post) => (
-          <div
+          <Link
+            to={`/post/${post._id}`}
             key={post._id}
-            className="border p-6 rounded-xl bg-white dark:bg-gray-800 shadow hover:shadow-lg transition-all"
+            className="p-6 bg-white rounded-xl shadow hover:shadow-xl hover:-translate-y-1"
           >
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
-              {post.title}
-            </h2>
-
-            <div className="mt-4 flex gap-4">
-              <a
-                href={`/post/${post._id}`}
-                className="text-blue-600 hover:underline"
-              >
-                View
-              </a>
-
-              <a
-                href={`/editor?id=${post._id}`}
-                className="text-green-600 hover:underline"
-              >
-                Edit
-              </a>
-
-              <button
-                onClick={async () => {
-                  await api.deletePost(post._id);
-                  loadPosts();
-                }}
-                className="text-red-600 hover:underline"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
+            <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
+            <p className="text-gray-600 line-clamp-3">{post.content}</p>
+          </Link>
         ))}
       </div>
     </div>

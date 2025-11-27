@@ -1,16 +1,17 @@
+import { Link } from "react-router-dom";
+
 export default function PostCard({ post }) {
-return (
-<div className="p-6 rounded-xl shadow bg-white dark:bg-gray-800 hover:shadow-xl transition-all">
-<h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{post.title}</h2>
-<p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-{post.excerpt || post.content.substring(0, 120) + "..."}
-</p>
-<a
-className="text-indigo-600 dark:text-indigo-400 hover:underline"
-href={`/post/${post._id}`}
->
-Read more →
-</a>
-</div>
-);
+  return (
+    <Link
+      to={`/post/${post._id}`}
+      className="block p-6 bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 scale-hover"
+    >
+      <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
+      <p className="text-gray-600 line-clamp-3">{post.content}</p>
+
+      <div className="mt-4 text-indigo-600 font-medium">
+        Read more →
+      </div>
+    </Link>
+  );
 }

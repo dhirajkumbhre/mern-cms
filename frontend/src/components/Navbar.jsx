@@ -1,49 +1,43 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-export default function Navbar() {
-  const token = localStorage.getItem("token");
+export default function Navbar(){
+  const [token, setToken] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(()=> setToken(localStorage.getItem("token")), []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/auth";
+    localStorage.removeItem("user");
+    setToken(null);
+    navigate("/auth");
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md shadow-md fixed top-0 left-0 right-0 z-50">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        
-        {/* LOGO */}
-        <Link to="/" className="text-2xl font-bold text-indigo-600 hover:text-indigo-700">
-          MERN CMS
+    <header className="fixed w-full z-50 top-0 left-0 bg-white/60 backdrop-blur-sm border-b border-white/10">
+      <div className="container-max flex items-center justify-between h-16">
+        <Link to="/" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold shadow">
+            M
+          </div>
+          <div className="text-lg font-semibold text-slate-800">MERN CMS</div>
         </Link>
 
-        {/* MENU */}
-        <div className="flex items-center gap-6 text-gray-700 font-medium">
-          <Link className="hover:text-indigo-600" to="/">Home</Link>
-          
-          {token && (
-            <Link className="hover:text-indigo-600" to="/dashboard">
-              Dashboard
-            </Link>
-          )}
+        <nav className="flex items-center gap-4">
+          <Link to="/" className="text-slate-700 hover:text-indigo-600">Home</Link>
 
-          {!token ? (
-            <Link
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow"
-              to="/auth"
-            >
-              Login
-            </Link>
+          { token ? (
+            <>
+              <Link to="/dashboard" className="text-slate-700 hover:text-indigo-600">Dashboard</Link>
+              <Link to="/editor" className="px-3 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 ml-2 shadow cta">New post</Link>
+              <button onClick={handleLogout} className="ml-2 px-3 py-2 rounded-md bg-red-500 text-white hover:bg-red-600">Logout</button>
+            </>
           ) : (
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow"
-            >
-              Logout
-            </button>
-          )}
-        </div>
+            <Link to="/auth" className="px-3 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 ml-2 shadow">Login / Register</Link>
+          ) }
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }

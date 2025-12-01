@@ -11,7 +11,7 @@ export default function Home() {
       <div className="absolute top-1/2 left-[60%] w-40 h-40 bg-pink-300 opacity-20 rounded-full float-slow"></div>
 
       {/* MAIN HERO */}
-      <section className="pt-28 pb-24 px-6 max-w-5xl mx-auto text-center fade-enter">
+      <section className="pt-28 pb-14 px-6 max-w-5xl mx-auto text-center fade-enter">
 
         <h1 className="text-5xl md:text-6xl font-extrabold gradient-text leading-tight">
           Write. Publish. Inspire.

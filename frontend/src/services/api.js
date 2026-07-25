@@ -25,6 +25,9 @@ export const api = {
   updatePost: (id, data) => axiosInstance.put(`/posts/${id}`, data),
   deletePost: (id) => axiosInstance.delete(`/posts/${id}`),
 
+
+  dashboardStats: () => axiosInstance.get("/posts/dashboard/stats"),
+
   /* auth */
   register: (data) => axiosInstance.post("/auth/register", data),
   login: (data) => axiosInstance.post("/auth/login", data),

@@ -13,7 +13,7 @@ import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
 // Dashboard Statistics
-router.get("/dashboard/stats", protect, getDashboardStats);
+router.get("/dashboard/stats", getDashboardStats);
 
 // Posts
 router.route("/")

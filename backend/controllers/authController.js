@@ -13,7 +13,7 @@ export const registerUser = async (req, res) => {
     res.json({ _id: user._id, name: user.name, email: user.email, token: generateToken(user._id) });
   } catch (err) {
     res.status(500).json({ message: err.message });
-  }
+  }b
 };
 
 export const loginUser = async (req, res) => {

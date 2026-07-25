@@ -1,22 +1,36 @@
 import { Routes, Route } from "react-router-dom";
+
 import Home from "./pages/Home";
+import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import PostEditor from "./pages/PostEditor";
 import PostView from "./pages/PostView";
-import Auth from "./pages/Auth";
+
 import ProtectedRoute from "./ProtectedRoute";
+import DashboardLayout from "./components/layout/DashboardLayout";
 
 export default function App() {
   return (
-    <div className="pt-24">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/editor" element={<ProtectedRoute><PostEditor /></ProtectedRoute>} />
-        <Route path="/editor/:id" element={<ProtectedRoute><PostEditor /></ProtectedRoute>} />
-        <Route path="/post/:id" element={<PostView />} />
-      </Routes>
-    </div>
+    <Routes>
+
+      {/* Public Routes */}
+      <Route path="/" element={<Home />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/post/:id" element={<PostView />} />
+
+      {/* Protected Dashboard Routes */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/editor" element={<PostEditor />} />
+        <Route path="/editor/:id" element={<PostEditor />} />
+      </Route>
+
+    </Routes>
   );
 }

@@ -1,3 +1,5 @@
+
+import Posts from "./pages/Posts";
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -27,6 +29,7 @@ export default function App() {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/posts" element={<Posts />} />
         <Route path="/editor" element={<PostEditor />} />
         <Route path="/editor/:id" element={<PostEditor />} />
       </Route>

@@ -6,7 +6,8 @@
 | Handles both creating and editing posts.
 |
 */
-
+import { api } from "../services/api";
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -35,26 +36,25 @@ export default function PostEditor() {
   /* Load existing post when editing                                    */
   /* ------------------------------------------------------------------ */
 
-  useEffect(() => {
-    if (!isEditMode) return;
+useEffect(() => {
+  if (!id) return;
 
-    const loadPost = async () => {
-      try {
-        const { data } = await api.fetchPost(id);
+  loadPost();
+}, [id]);
+ async function loadPost() {
+  try {
+    const { data } = await api.fetchPost(id);
 
-        setFormData({
-          title: data.title || "",
-          excerpt: data.excerpt || "",
-          content: data.content || "",
-          status: data.status || "Draft",
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    loadPost();
-  }, [id, isEditMode]);
+    setFormData({
+      title: data.title || "",
+      excerpt: data.excerpt || "",
+      content: data.content || "",
+      status: data.status || "Draft",
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   /* ------------------------------------------------------------------ */
   /* Handle input changes                                                */
@@ -100,12 +100,16 @@ export default function PostEditor() {
 
     try {
       if (isEditMode) {
-        await api.updatePost(id, formData);
-      } else {
-        await api.createPost(formData);
-      }
+  await api.updatePost(id, formData);
 
-      navigate("/dashboard");
+  toast.success("Post updated successfully");
+} else {
+  await api.createPost(formData);
+
+  toast.success("Post published successfully");
+}
+
+      navigate("/posts");
     } catch (error) {
       console.error(error);
     } finally {

@@ -1,3 +1,5 @@
+
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
@@ -84,8 +86,13 @@ export default function Auth() {
       // Save JWT so protected routes can use it
       localStorage.setItem("token", response.data.token);
 
+      toast.success("Welcome back!");
+
+
       // Redirect after successful authentication
       navigate("/dashboard");
+
+
     } catch (err) {
       // Show backend error if available
       setError(

@@ -13,7 +13,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { Save, Send } from "lucide-react";
 
-import { api } from "../services/api";
 
 export default function PostEditor() {
   const navigate = useNavigate();

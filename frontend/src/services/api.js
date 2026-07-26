@@ -3,32 +3,69 @@ import axios from "axios";
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE || "http://localhost:5000/api",
   withCredentials: false,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-}, (err) => Promise.reject(err));
+/* ==========================================================
+   Request Interceptor
+========================================================== */
 
-axiosInstance.interceptors.response.use((res) => res, (err) => {
-  // Optional: centralized error handling
-  return Promise.reject(err);
-});
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+/* ==========================================================
+   Response Interceptor
+========================================================== */
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => Promise.reject(error)
+);
+
+/* ==========================================================
+   API Methods
+========================================================== */
 
 export const api = {
-  /* posts */
+  /* ---------------- Posts ---------------- */
+
   fetchPosts: () => axiosInstance.get("/posts"),
+
   fetchPost: (id) => axiosInstance.get(`/posts/${id}`),
+
   createPost: (data) => axiosInstance.post("/posts", data),
-  updatePost: (id, data) => axiosInstance.put(`/posts/${id}`, data),
-  deletePost: (id) => axiosInstance.delete(`/posts/${id}`),
 
+  updatePost: (id, data) =>
+    axiosInstance.put(`/posts/${id}`, data),
 
-  dashboardStats: () => axiosInstance.get("/posts/dashboard/stats"),
+  deletePost: (id) =>
+    axiosInstance.delete(`/posts/${id}`),
 
-  /* auth */
-  register: (data) => axiosInstance.post("/auth/register", data),
-  login: (data) => axiosInstance.post("/auth/login", data),
+  /* ---------------- Dashboard ---------------- */
+
+  dashboardStats: () =>
+    axiosInstance.get("/posts/dashboard/stats"),
+
+  monthlyPosts: () =>
+    axiosInstance.get("/posts/dashboard/monthly-posts"),
+
+  /* ---------------- Authentication ---------------- */
+
+  register: (data) =>
+    axiosInstance.post("/auth/register", data),
+
+  login: (data) =>
+    axiosInstance.post("/auth/login", data),
 };

@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   getPosts,
   getPost,
@@ -6,21 +7,34 @@ import {
   updatePost,
   deletePost,
   getDashboardStats,
+  getMonthlyPosts,
 } from "../controllers/postController.js";
 
 import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Dashboard Statistics
+/* ==========================================================
+   Dashboard Analytics
+========================================================== */
+
+// Statistics Cards
 router.get("/dashboard/stats", getDashboardStats);
 
-// Posts
-router.route("/")
+// Monthly Bar Chart
+router.get("/dashboard/monthly-posts", getMonthlyPosts);
+
+/* ==========================================================
+   Posts
+========================================================== */
+
+router
+  .route("/")
   .get(getPosts)
   .post(protect, createPost);
 
-router.route("/:id")
+router
+  .route("/:id")
   .get(getPost)
   .put(protect, updatePost)
   .delete(protect, deletePost);

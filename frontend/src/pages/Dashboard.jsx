@@ -7,6 +7,9 @@
 |
 */
 
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+
 import StatsGrid from "../components/dashboard/StatsGrid";
 import PostsChart from "../components/dashboard/PostsChart";
 import StatusPieChart from "../components/dashboard/StatusPieChart";
@@ -14,46 +17,58 @@ import RecentPosts from "../components/dashboard/RecentPosts";
 import QuickActions from "../components/dashboard/QuickActions";
 import ActivityFeed from "../components/dashboard/ActivityFeed";
 
-import { monthlyPosts } from "../data/chartData";
-
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-
 import { api } from "../services/api";
 
 function Dashboard() {
+  /* ==========================================================
+     Dashboard State
+  ========================================================== */
+
   const [stats, setStats] = useState({
-  totalPosts: 0,
-  draftPosts: 0,
-  publishedPosts: 0,
-});
+    totalPosts: 0,
+    draftPosts: 0,
+    publishedPosts: 0,
+  });
 
-const [loading, setLoading] = useState(true);
-useEffect(() => {
-  fetchDashboardStats();
-}, []);
+  const [monthlyPosts, setMonthlyPosts] = useState([]);
 
-async function fetchDashboardStats() {
-  try {
-    setLoading(true);
+  const [loading, setLoading] = useState(true);
 
-    const { data } = await api.dashboardStats();
+  /* ==========================================================
+     Fetch Dashboard Data
+  ========================================================== */
 
-    setStats(data);
-  } catch (error) {
-    console.error(error);
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
-    toast.error("Failed to load dashboard statistics");
-  } finally {
-    setLoading(false);
+  async function fetchDashboardData() {
+    try {
+      setLoading(true);
+
+      const [statsResponse, monthlyResponse] = await Promise.all([
+        api.dashboardStats(),
+        api.monthlyPosts(),
+      ]);
+
+      setStats(statsResponse.data);
+      setMonthlyPosts(monthlyResponse.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load dashboard");
+    } finally {
+      setLoading(false);
+    }
   }
-}
+
+  /* ==========================================================
+     Dashboard UI
+  ========================================================== */
+
   return (
     <div className="space-y-8">
 
-      {/* ==========================================================
-          Page Heading
-      ========================================================== */}
+      {/* Page Heading */}
 
       <section>
         <h1 className="text-3xl font-bold text-white">
@@ -65,47 +80,27 @@ async function fetchDashboardStats() {
         </p>
       </section>
 
-      {/* ==========================================================
-          Statistics Cards
-      ========================================================== */}
+      {/* Statistics */}
 
       <StatsGrid
-  stats={stats}
-  loading={loading}
-/>
+        stats={stats}
+        loading={loading}
+      />
 
-      {/* ==========================================================
-          Monthly Posts Chart
-      ========================================================== */}
+      {/* Analytics */}
 
-      {/* ==========================================================
-    Dashboard Analytics
-========================================================== */}
+      <section className="grid gap-6 lg:grid-cols-2">
 
-<section className="grid gap-6 lg:grid-cols-2">
+        <PostsChart data={monthlyPosts} />
 
-  <PostsChart data={monthlyPosts} />
+        <StatusPieChart
+          published={stats.publishedPosts}
+          drafts={stats.draftPosts}
+        />
 
-  <StatusPieChart
-    published={stats.publishedPosts}
-    drafts={stats.draftPosts}
-  />
+      </section>
 
-</section>
-
-
-      {/* ==========================================================
-          Post Status Pie Chart
-      ========================================================== */}
-
-<StatusPieChart
-  published={stats.publishedPosts}
-  drafts={stats.draftPosts}
-/>
-
-      {/* ==========================================================
-          Dashboard Widgets
-      ========================================================== */}
+      {/* Widgets */}
 
       <section className="grid gap-6 lg:grid-cols-3">
 

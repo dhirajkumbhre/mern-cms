@@ -167,7 +167,7 @@ export default function Auth() {
             <h2 className="text-3xl font-bold text-white">
 
               {isLogin
-                ? "Welcome Back 👋"
+                ? "Welcome Back "
                 : "Create Your Account"}
 
             </h2>

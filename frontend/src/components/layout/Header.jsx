@@ -40,7 +40,7 @@ function Header() {
 
         <h2 className="text-2xl font-bold text-white">
 
-          Welcome back, {userName} 👋
+          Welcome back, {userName} 
 
         </h2>
 

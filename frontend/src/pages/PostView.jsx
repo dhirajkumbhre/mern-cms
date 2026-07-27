@@ -98,6 +98,23 @@ export default function PostView() {
 
         </div>
 
+
+        {/* ======================================================
+    Featured Image
+====================================================== */}
+
+{post.imageUrl && (
+  <div className="mt-8 overflow-hidden rounded-2xl border border-slate-800">
+
+    <img
+      src={post.imageUrl}
+      alt={post.title}
+      className="h-[500px] w-full object-cover"
+    />
+
+  </div>
+)}
+
         {post.excerpt && (
           <div className="mt-10">
 

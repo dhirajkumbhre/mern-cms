@@ -6,10 +6,12 @@
    Features:
    - Loading skeleton
    - Empty state
+   - Featured Image
    - View post
    - Edit post
    - Delete post
 ========================================================== */
+
 import EmptyState from "./EmptyState";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -22,22 +24,25 @@ export default function PostsTable({
   loading,
   onDelete,
 }) {
-  // Used for navigating to View and Edit pages
   const navigate = useNavigate();
 
   /* ==========================================================
      Loading State
-     ----------------------------------------------------------
-     Show animated placeholder rows while data is loading.
   ========================================================== */
+
   if (loading) {
     return (
       <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
         <div className="overflow-x-auto">
           <table className="w-full">
-            {/* Table Header */}
+
             <thead className="border-b border-slate-800 bg-slate-950">
               <tr>
+
+                <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">
+                  Image
+                </th>
+
                 <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">
                   Title
                 </th>
@@ -53,13 +58,14 @@ export default function PostsTable({
                 <th className="px-6 py-4 text-center text-sm font-semibold text-slate-300">
                   Actions
                 </th>
+
               </tr>
             </thead>
 
-            {/* Animated Skeleton Rows */}
             <tbody>
               <SkeletonRow rows={5} />
             </tbody>
+
           </table>
         </div>
       </div>
@@ -68,8 +74,6 @@ export default function PostsTable({
 
   /* ==========================================================
      Empty State
-     ----------------------------------------------------------
-     Display when no posts match the current search/filter.
   ========================================================== */
 
   if (!posts.length) {
@@ -79,6 +83,7 @@ export default function PostsTable({
   /* ==========================================================
      Posts Table
   ========================================================== */
+
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
       <div className="overflow-x-auto">
@@ -87,8 +92,14 @@ export default function PostsTable({
           {/* ======================================================
               Table Header
           ======================================================= */}
+
           <thead className="border-b border-slate-800 bg-slate-950">
             <tr>
+
+              <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">
+                Image
+              </th>
+
               <th className="px-6 py-4 text-left text-sm font-semibold text-slate-300">
                 Title
               </th>
@@ -104,22 +115,43 @@ export default function PostsTable({
               <th className="px-6 py-4 text-center text-sm font-semibold text-slate-300">
                 Actions
               </th>
+
             </tr>
           </thead>
 
           {/* ======================================================
               Posts List
           ======================================================= */}
+
           <tbody>
+
             {posts.map((post) => (
               <tr
                 key={post._id}
                 className="border-b border-slate-800 transition hover:bg-slate-800/40"
               >
+
+                {/* -------------------------------------------------
+                    Featured Image
+                -------------------------------------------------- */}
+
+                <td className="px-6 py-5">
+                  <img
+                    src={
+                      post.imageUrl ||
+                      "https://placehold.co/80x80/0f172a/94a3b8?text=No+Image"
+                    }
+                    alt={post.title}
+                    className="h-16 w-16 rounded-lg border border-slate-700 object-cover"
+                  />
+                </td>
+
                 {/* -------------------------------------------------
                     Post Title & Excerpt
                 -------------------------------------------------- */}
-                <td className="px-6 py-5">
+
+                <td className="px-6 py-5 align-top">
+
                   <h3 className="font-semibold text-white">
                     {post.title}
                   </h3>
@@ -127,11 +159,13 @@ export default function PostsTable({
                   <p className="mt-1 line-clamp-2 text-sm text-slate-400">
                     {post.excerpt || "No excerpt available."}
                   </p>
+
                 </td>
 
                 {/* -------------------------------------------------
                     Post Status
                 -------------------------------------------------- */}
+
                 <td className="px-6 py-5">
                   <StatusBadge status={post.status} />
                 </td>
@@ -139,20 +173,21 @@ export default function PostsTable({
                 {/* -------------------------------------------------
                     Post Creation Date
                 -------------------------------------------------- */}
+
                 <td className="px-6 py-5 text-sm text-slate-400">
                   {new Date(post.createdAt).toLocaleDateString()}
                 </td>
 
                 {/* -------------------------------------------------
                     Action Buttons
-                    - View
-                    - Edit
-                    - Delete
                 -------------------------------------------------- */}
+
                 <td className="px-6 py-5">
+
                   <div className="flex items-center justify-center gap-2">
 
-                    {/* View Post */}
+                    {/* View */}
+
                     <button
                       onClick={() =>
                         navigate(`/posts/${post._id}`)
@@ -162,7 +197,8 @@ export default function PostsTable({
                       <Eye size={18} />
                     </button>
 
-                    {/* Edit Post */}
+                    {/* Edit */}
+
                     <button
                       onClick={() =>
                         navigate(`/editor/${post._id}`)
@@ -172,7 +208,8 @@ export default function PostsTable({
                       <Pencil size={18} />
                     </button>
 
-                    {/* Delete Post */}
+                    {/* Delete */}
+
                     <button
                       onClick={() => onDelete(post)}
                       className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-800 hover:text-red-400"
@@ -181,9 +218,12 @@ export default function PostsTable({
                     </button>
 
                   </div>
+
                 </td>
+
               </tr>
             ))}
+
           </tbody>
 
         </table>

@@ -19,6 +19,12 @@ const postSchema = new mongoose.Schema(
       trim: true,
     },
 
+
+    imageUrl: {
+  type: String,
+  default: "",
+},
+
     status: {
       type: String,
       enum: ["Draft", "Published"],

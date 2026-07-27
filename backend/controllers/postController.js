@@ -31,15 +31,23 @@ export const getPost = async (req, res) => {
 ========================================================== */
 
 export const createPost = async (req, res) => {
-  const { title, content, excerpt, status } = req.body;
+const {
+  title,
+  content,
+  excerpt,
+  imageUrl,
+  status,
+} = req.body;
 
-  const post = await Post.create({
-    title,
-    content,
-    excerpt,
-    status,
-    author: req.user?._id,
-  });
+
+const post = await Post.create({
+  title,
+  content,
+  excerpt,
+  imageUrl,
+  status,
+  author: req.user?._id,
+});
 
   res.status(201).json(post);
 };

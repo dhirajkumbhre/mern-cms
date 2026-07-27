@@ -53,6 +53,14 @@ export const api = {
   deletePost: (id) =>
     axiosInstance.delete(`/posts/${id}`),
 
+
+    uploadImage: (formData) =>
+    axiosInstance.post("/upload/image", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
+
   /* ---------------- Dashboard ---------------- */
 
   dashboardStats: () =>

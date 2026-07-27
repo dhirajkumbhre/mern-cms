@@ -25,9 +25,12 @@ export default function PostEditor() {
     excerpt: "",
     content: "",
     status: "Draft",
+    imageUrl:"",
   });
 
   const [loading, setLoading] = useState(false);
+
+  const [uploading, setUploading] = useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -67,6 +70,40 @@ useEffect(() => {
       [name]: value,
     }));
   };
+
+
+  /* ------------------------------------------------------------------ */
+/* Upload Featured Image                                              */
+/* ------------------------------------------------------------------ */
+
+const handleImageUpload = async (event) => {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  try {
+    setUploading(true);
+
+    const imageData = new FormData();
+
+    imageData.append("image", file);
+
+    const { data } = await api.uploadImage(imageData);
+
+    setFormData((previous) => ({
+      ...previous,
+      imageUrl: data.imageUrl,
+    }));
+
+    toast.success("Image uploaded successfully");
+  } catch (error) {
+    console.error(error);
+
+    toast.error("Image upload failed");
+  } finally {
+    setUploading(false);
+  }
+};
 
   /* ------------------------------------------------------------------ */
   /* Form validation                                                    */
@@ -137,7 +174,46 @@ useEffect(() => {
 
         </div>
 
+
+
+        {/* Featured Image */}
+
+<div className="mb-6">
+
+  <label className="mb-2 block text-sm font-medium text-slate-300">
+    Featured Image
+  </label>
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageUpload}
+    className="block w-full text-slate-300"
+  />
+
+    {uploading && (
+    <p className="mt-2 text-sm text-emerald-400">
+      Uploading image...
+    </p>
+  )}
+
+  {formData.imageUrl && (
+    <img
+      src={formData.imageUrl}
+      alt="Preview"
+      className="mt-4 h-56 w-full rounded-xl object-cover"
+    />
+
+  )}
+
+</div>
+
+
+
+
         {/* Title */}
+
+        
 
         <div className="mb-6">
 

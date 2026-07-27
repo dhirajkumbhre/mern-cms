@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE || "http://localhost:5000/api",
+  baseURL:
+    import.meta.env.VITE_API_BASE ||
+    "https://mern-cms-backend-z67v.onrender.com/api",
   withCredentials: false,
   headers: {
     "Content-Type": "application/json",

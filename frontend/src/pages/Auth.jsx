@@ -84,7 +84,19 @@ export default function Auth() {
       }
 
       // Save JWT so protected routes can use it
+
       localStorage.setItem("token", response.data.token);
+
+localStorage.setItem(
+  "user",
+  JSON.stringify({
+    _id: response.data._id,
+    name: response.data.name,
+    email: response.data.email,
+  })
+);
+
+
 
       toast.success("Welcome back!");
 

@@ -26,8 +26,9 @@ import {
 function Header() {
 
   // We'll replace this with real user data after authentication.
-  const userName = "Dhiraj";
+  const user = JSON.parse(localStorage.getItem("user"));
 
+  const userName = user?.name || "User";
   return (
 
     <header className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-8 py-5">
@@ -40,7 +41,7 @@ function Header() {
 
         <h2 className="text-2xl font-bold text-white">
 
-          Welcome back, {userName} 
+          Welcome back, {user?.name || "Guest"} 
 
         </h2>
 
@@ -142,7 +143,7 @@ function Header() {
 
             <p className="text-sm font-semibold text-white">
 
-              {userName}
+              {user?.name || "Guest"}
 
             </p>
 
